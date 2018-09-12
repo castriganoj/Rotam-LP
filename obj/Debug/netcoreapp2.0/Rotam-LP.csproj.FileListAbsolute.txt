@@ -1,0 +1,11 @@
+C:\Users\i220655\source\personal-repos\Rotam-LP\bin\Debug\netcoreapp2.0\Rotam-LP.deps.json
+C:\Users\i220655\source\personal-repos\Rotam-LP\bin\Debug\netcoreapp2.0\Rotam-LP.runtimeconfig.json
+C:\Users\i220655\source\personal-repos\Rotam-LP\bin\Debug\netcoreapp2.0\Rotam-LP.runtimeconfig.dev.json
+C:\Users\i220655\source\personal-repos\Rotam-LP\bin\Debug\netcoreapp2.0\Rotam-LP.dll
+C:\Users\i220655\source\personal-repos\Rotam-LP\bin\Debug\netcoreapp2.0\Rotam-LP.pdb
+C:\Users\i220655\source\personal-repos\Rotam-LP\obj\Debug\netcoreapp2.0\Rotam-LP.csprojAssemblyReference.cache
+C:\Users\i220655\source\personal-repos\Rotam-LP\obj\Debug\netcoreapp2.0\Rotam-LP.csproj.CoreCompileInputs.cache
+C:\Users\i220655\source\personal-repos\Rotam-LP\obj\Debug\netcoreapp2.0\Rotam-LP.AssemblyInfoInputs.cache
+C:\Users\i220655\source\personal-repos\Rotam-LP\obj\Debug\netcoreapp2.0\Rotam-LP.AssemblyInfo.cs
+C:\Users\i220655\source\personal-repos\Rotam-LP\obj\Debug\netcoreapp2.0\Rotam-LP.dll
+C:\Users\i220655\source\personal-repos\Rotam-LP\obj\Debug\netcoreapp2.0\Rotam-LP.pdb

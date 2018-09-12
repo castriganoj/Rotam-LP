@@ -1,0 +1,10 @@
+C:\Users\i220655\source\personal-repos\Rotam-LP
+--output-path=obj\Debug\netcoreapp2.0\
+--application-name=Rotam-LP
+--content-root=C:\Users\i220655\source\personal-repos\Rotam-LP
+--file=C:\Users\i220655\source\personal-repos\Rotam-LP\Views\Home\Index.cshtml
+--file=C:\Users\i220655\source\personal-repos\Rotam-LP\Views\Shared\Error.cshtml
+--file=C:\Users\i220655\source\personal-repos\Rotam-LP\Views\Shared\_Layout.cshtml
+--file=C:\Users\i220655\source\personal-repos\Rotam-LP\Views\Shared\_ValidationScriptsPartial.cshtml
+--file=C:\Users\i220655\source\personal-repos\Rotam-LP\Views\_ViewImports.cshtml
+--file=C:\Users\i220655\source\personal-repos\Rotam-LP\Views\_ViewStart.cshtml
