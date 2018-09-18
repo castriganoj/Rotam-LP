@@ -10,6 +10,7 @@
 body {
   background: #fff;
   color: #666666;
+
   font-family: "Open Sans", sans-serif;
   overflow-x: hidden;
 }
@@ -772,23 +773,25 @@ body.mobile-nav-active #mobile-nav-toggle {
 }
 
 #call-to-action .cta-btn {
-  font-family: "Montserrat", sans-serif;
-  font-weight: 500;
-  font-size: 16px;
-  letter-spacing: 1px;
-  display: inline-block;
-  padding: 8px 30px;
-  border-radius: 25px;
-  transition: background 0.5s;
-  margin: 10px;
-  border: 2px solid #fff;
-  color: #fff;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    letter-spacing: 1px;
+    display: inline-block;
+    padding: 8px 30px;
+    border-radius: 25px;
+    transition: background 0.5s;
+    margin: 10px 0 10px 10px;
+    border: 2px solid #fff;
+    color: #fff;
+    background: transparent;
 }
 
 #call-to-action .cta-btn:hover {
   background: #ffffff;
   border: 2px solid #21b76f;
   color: #22b980;
+  cursor: pointer;
 }
 
 /* More Features Section
