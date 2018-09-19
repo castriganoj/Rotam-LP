@@ -3,11 +3,15 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
+using Microsoft.IdentityModel.Protocols;
 using Newtonsoft.Json;
 using Rotam_LP.Models;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 
 namespace Rotam_LP.Controllers
 {
@@ -34,11 +38,47 @@ namespace Rotam_LP.Controllers
 
         //csrf protection needed
         [HttpPost]
-        public async Task<string> SubmitContactInfo([FromBody] Contact contact)
+        public async Task<IActionResult> SubmitContactInfo([FromBody] Contact contact)
         {
-            Debug.WriteLine(contact);
-            await CreateContactDocumentIfNotExists( "RotamLandingPage", "ContactInfo", contact);
-            return contact.Id;
+            try
+            {
+                await CreateContactDocumentIfNotExists("RotamLandingPage", "ContactInfo", contact);
+
+                await SendConfirmationEmailAsync(contact);
+
+                return Ok(contact);
+            }
+            catch(Exception e )
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+           
+        }
+        
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        private DocumentClient GetDocumentDb()
+        {
+           return new DocumentClient(new Uri(EndpointUri), PrimaryKey);
+        }
+
+        private async Task SendConfirmationEmailAsync(Contact contact)
+        {
+            var mailKey = System.Configuration.ConfigurationManager.AppSettings["emailKey"];
+            var fromEmail = System.Configuration.ConfigurationManager.AppSettings["fromEmailAddress"];
+            var fromEmailName = System.Configuration.ConfigurationManager.AppSettings["fromEmailName"];
+
+            var client = new SendGridClient(mailKey);
+            var from = new EmailAddress(fromEmail, fromEmailName);
+            var subject = "Sending with SendGrid is Fun";
+            var to = new EmailAddress("castriganoj@gmail.com", "Example User");
+            var plainTextContent = "and easy to do anywhere, even with C#";
+            var htmlContent = "<strong>and easy to do anywhere, even with C#</strong>";
+            var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
+            var response = await client.SendEmailAsync(msg);
         }
 
         private async Task CreateContactDocumentIfNotExists(string databaseName, string collectionName, Contact contact)
@@ -62,19 +102,10 @@ namespace Rotam_LP.Controllers
             }
         }
 
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
-        private DocumentClient GetDocumentDb()
-        {
-           return new DocumentClient(new Uri(EndpointUri), PrimaryKey);
-        }
     }
 
 
-   
+
 
     public class Contact
     {
@@ -84,6 +115,7 @@ namespace Rotam_LP.Controllers
         [Required]
         public string Name { get; set; }
 
+        [Required]
         [EmailAddress]
         public string Email { get; set; }
 
