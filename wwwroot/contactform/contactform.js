@@ -83,7 +83,7 @@ $(function () {
 
         saveContact: function (contact) {
             
-            Data.saveEntity(contact)
+            Data.saveContact(contact)
                 .then(function (contactSaved) {
                     if (contactSaved === true) {
                         ContactView.renderSuccessMessage();
