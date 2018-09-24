@@ -8,7 +8,7 @@ $(function () {
         },
 
         inquiry: {
-            contact: this.contact,
+            contact: null,
             subject: "",
             message: ""
 
@@ -18,13 +18,33 @@ $(function () {
 
         activeInquiry: null,
 
-        saveEntity: function (entity) {
+        saveContact: function (contact) {
 
             return new Promise(function (resolve, reject) {
                 $.ajax({
                     type: "POST",
                     url: "home/submitcontactinfo",
-                    data: JSON.stringify(entity),
+                    data: JSON.stringify(contact),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: 'json',
+                    success: function () {
+                        return resolve(true);
+                    },
+                    error: function () {
+                        return resolve(false);
+                    }
+                });
+            });
+
+        },
+
+        saveInquiry: function (inquiry) {
+
+            return new Promise(function (resolve, reject) {
+                $.ajax({
+                    type: "POST",
+                    url: "home/submitinquiry",
+                    data: JSON.stringify(inquiry),
                     contentType: "application/json; charset=utf-8",
                     dataType: 'json',
                     success: function () {
@@ -47,6 +67,9 @@ $(function () {
             InquiryView.init();
 
             Data.activeContact = Data.contact;
+            Data.activeInquiry = Data.inquiry;
+
+            Data.activeInquiry.contact = Data.contact;
 
         },
 
@@ -76,7 +99,7 @@ $(function () {
         },
 
         saveInquiry: function (inquiry) {
-            Data.saveEntity(inquiry)
+            Data.saveInquiry(inquiry)
                 .then(function (inquirySaved) {
                     if (inquirySaved === true) {
                         InquiryView.renderSuccessMessage();
@@ -148,16 +171,15 @@ $(function () {
             this.inquiryForm.submit(function(e) {
                 e.preventDefault();
 
-                var inquiry = Controller.getInquiry;
+                var inquiry = Controller.getInquiry();
 
-                inquiry.name = this.contactFormName.val();
-                inquiry.email = this.contactformEmail.val();
-                inquiry.message = this.contactFormMessage.val();
+                inquiry.contact.name = InquiryView.inquiryFormName.val();
+                inquiry.contact.email = InquiryView.inquiryFormEmail.val();
+                inquiry.message = InquiryView.inquiryFormMessage.val();
 
-                Controller.saveInquiry();
+                Controller.saveInquiry(inquiry);
             });
 
-            debugger;
             InquiryView.render();
 
         },

@@ -29,7 +29,9 @@ namespace Rotam_LP.Controllers
             //ToDo: move to one time execution and startup
             documentClient.CreateDatabaseIfNotExistsAsync(new Database() {Id = "RotamLandingPage"});
             documentClient.CreateDocumentCollectionIfNotExistsAsync(UriFactory.CreateDatabaseUri("RotamLandingPage"), new DocumentCollection { Id = "ContactInfo" });
-            }
+            documentClient.CreateDocumentCollectionIfNotExistsAsync(UriFactory.CreateDatabaseUri("RotamLandingPage"), new DocumentCollection { Id = "Inquiry" });
+
+        }
 
         public IActionResult Index()
         {
@@ -43,7 +45,7 @@ namespace Rotam_LP.Controllers
             {
                 await CreateContactDocumentIfNotExists("RotamLandingPage", "ContactInfo", contact);
 
-                await SendConfirmationEmailAsync(contact);
+                await SendConfirmationEmailAsync(contact, "Thank you for singing up for Rotam!");
 
                 return Ok(contact);
             }
@@ -53,7 +55,28 @@ namespace Rotam_LP.Controllers
             }
            
         }
-        
+
+        [HttpPost]
+        public async Task<IActionResult> SubmitInquiry([FromBody] Inquiry inquiry)
+        {
+            var confirmationMessage = "Thank you for your inquiry";
+            try
+            {
+                await CreateInquiryDocumentIfNotExists("RotamLandingPage", "Inquiry", inquiry);
+
+                await SendConfirmationEmailAsync(inquiry.contact, confirmationMessage);
+
+                return Ok(inquiry);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+        }
+
+       
+
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
@@ -64,7 +87,7 @@ namespace Rotam_LP.Controllers
            return new DocumentClient(new Uri(EndpointUri), PrimaryKey);
         }
 
-        private async Task SendConfirmationEmailAsync(Contact contact)
+        private async Task SendConfirmationEmailAsync(Contact contact, string message)
         {
             var mailKey = System.Configuration.ConfigurationManager.AppSettings["emailKey"];
             var fromEmail = System.Configuration.ConfigurationManager.AppSettings["fromEmailAddress"];
@@ -84,6 +107,7 @@ namespace Rotam_LP.Controllers
         {
             try
             {
+                //send id... change type to int so it defaults to 0 and call toString();
                 await this.documentClient.ReadDocumentAsync(UriFactory.CreateDocumentUri(databaseName, collectionName, "0"));
                 Debug.WriteLine("Contact exists {0}", contact.Name);
             }
@@ -101,6 +125,28 @@ namespace Rotam_LP.Controllers
             }
         }
 
+        private async Task CreateInquiryDocumentIfNotExists(string databaseName, string collectionName, Inquiry inquiry)
+        {
+            try
+            {
+                //ToDo: Create a new contact and link it to the contact in the inquiry
+                //ToDo: Send id... change type to int so it defaults to 0 and call toString();
+                await this.documentClient.ReadDocumentAsync(UriFactory.CreateDocumentUri(databaseName, collectionName, "0"));
+                Debug.WriteLine("Inquiry exists {0}", inquiry.contact.Name);
+            }
+            catch (DocumentClientException de)
+            {
+                if (de.StatusCode == HttpStatusCode.NotFound)
+                {
+                    await this.documentClient.CreateDocumentAsync(UriFactory.CreateDocumentCollectionUri(databaseName, collectionName), inquiry);
+                    Debug.WriteLine("Inquiry created {0}", inquiry.contact.Name);
+                }
+                else
+                {
+                    throw;
+                }
+            }
+        }
     }
 
 
@@ -127,5 +173,16 @@ namespace Rotam_LP.Controllers
         {
             verifyToken = Guid.NewGuid();
         }
+    }
+
+    public class Inquiry
+    {
+        [JsonProperty(PropertyName = "id")]
+        public string Id { get; set; }
+
+        public Contact contact { get; set; }
+
+        public string message { get; set; }
+
     }
 }
