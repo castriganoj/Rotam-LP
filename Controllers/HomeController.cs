@@ -36,7 +36,6 @@ namespace Rotam_LP.Controllers
             return View();
         }
 
-        //csrf protection needed
         [HttpPost]
         public async Task<IActionResult> SubmitContactInfo([FromBody] Contact contact)
         {
