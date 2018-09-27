@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Documents;
@@ -87,22 +88,6 @@ namespace Rotam_LP.Controllers
            return new DocumentClient(new Uri(EndpointUri), PrimaryKey);
         }
 
-        private async Task SendConfirmationEmailAsync(Contact contact, string message)
-        {
-            var mailKey = System.Configuration.ConfigurationManager.AppSettings["emailKey"];
-            var fromEmail = System.Configuration.ConfigurationManager.AppSettings["fromEmailAddress"];
-            var fromEmailName = System.Configuration.ConfigurationManager.AppSettings["fromEmailName"];
-
-            var client = new SendGridClient(mailKey);
-            var from = new EmailAddress(fromEmail, fromEmailName);
-            var subject = "Sending with SendGrid is Fun";
-            var to = new EmailAddress("castriganoj@gmail.com", "Example User");
-            var plainTextContent = "and easy to do anywhere, even with C#";
-            var htmlContent = "<strong>and easy to do anywhere, even with C#</strong>";
-            var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
-            var response = await client.SendEmailAsync(msg);
-        }
-
         private async Task CreateContactDocumentIfNotExists(string databaseName, string collectionName, Contact contact)
         {
             try
@@ -127,6 +112,9 @@ namespace Rotam_LP.Controllers
 
         private async Task CreateInquiryDocumentIfNotExists(string databaseName, string collectionName, Inquiry inquiry)
         {
+
+            await SendNotificationEmailAsync("An inquiry has been sent from: " +
+                                             Request.GetUri() + " by: " + inquiry.contact.Name);
             try
             {
                 //ToDo: Create a new contact and link it to the contact in the inquiry
@@ -146,6 +134,38 @@ namespace Rotam_LP.Controllers
                     throw;
                 }
             }
+        }
+
+        private async Task SendConfirmationEmailAsync(Contact contact, string message)
+        {
+            var mailKey = System.Configuration.ConfigurationManager.AppSettings["emailKey"];
+            var fromEmail = System.Configuration.ConfigurationManager.AppSettings["fromEmailAddress"];
+            var fromEmailName = System.Configuration.ConfigurationManager.AppSettings["fromEmailName"];
+
+            var client = new SendGridClient(mailKey);
+            var from = new EmailAddress(fromEmail, fromEmailName);
+            var subject = "Message from Rotam";
+            var to = new EmailAddress(contact.Email, contact.Name);
+            var plainTextContent = message;
+            var htmlContent = message;
+            var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
+            await client.SendEmailAsync(msg);
+        }
+
+        private async Task SendNotificationEmailAsync(string message)
+        {
+            var mailKey = System.Configuration.ConfigurationManager.AppSettings["emailKey"];
+            var fromEmail = System.Configuration.ConfigurationManager.AppSettings["fromEmailAddress"];
+            var fromEmailName = System.Configuration.ConfigurationManager.AppSettings["fromEmailName"];
+
+            var client = new SendGridClient(mailKey);
+            var from = new EmailAddress(fromEmail, fromEmailName);
+            var subject = "A message from Rotam";
+            var to = new EmailAddress("castriganoj@gmail.com", "Jim");
+            var plainTextContent = message;
+            var htmlContent = message;
+            var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
+            await client.SendEmailAsync(msg);
         }
     }
 
