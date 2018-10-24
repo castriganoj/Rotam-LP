@@ -19,8 +19,8 @@ namespace Rotam_LP.Controllers
     public class HomeController : Controller
     {
 
-        private const string EndpointUri = "https://jc-personal.documents.azure.com:443/";
-        private const string PrimaryKey = "KoT2bqKjHqbuR1ijlz2l2fkJiUYyDAsF3WWffwX68vkxlugmlIm4vWHcDZhWt9BuSB0LnQIKqs7gK4ie9Pteqg==";
+        private const string EndpointUri = "https://jc-personal2.documents.azure.com:443/";
+        private const string PrimaryKey = "goXAev7OU8TUiTbRAVZxgfFubr3UVRStxP2v17UsvG82ZIpBvpI9R5UBR6D76vbGkIMFtRetPnxGgpNwUt47UA==";
         private DocumentClient documentClient;
 
         public HomeController()
@@ -30,7 +30,6 @@ namespace Rotam_LP.Controllers
             //ToDo: move to one time execution and startup
             documentClient.CreateDatabaseIfNotExistsAsync(new Database() {Id = "RotamLandingPage"});
             documentClient.CreateDocumentCollectionIfNotExistsAsync(UriFactory.CreateDatabaseUri("RotamLandingPage"), new DocumentCollection { Id = "ContactInfo" });
-            documentClient.CreateDocumentCollectionIfNotExistsAsync(UriFactory.CreateDatabaseUri("RotamLandingPage"), new DocumentCollection { Id = "Inquiry" });
 
         }
 
@@ -63,7 +62,7 @@ namespace Rotam_LP.Controllers
             var confirmationMessage = "Thank you for your inquiry";
             try
             {
-                await CreateInquiryDocumentIfNotExists("RotamLandingPage", "Inquiry", inquiry);
+                await CreateInquiryDocumentIfNotExists("RotamLandingPage", "ContactInfo", inquiry);
 
                 await SendConfirmationEmailAsync(inquiry.contact, confirmationMessage);
 
