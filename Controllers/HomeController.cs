@@ -89,6 +89,9 @@ namespace Rotam_LP.Controllers
 
         private async Task CreateContactDocumentIfNotExists(string databaseName, string collectionName, Contact contact)
         {
+
+            await SendNotificationEmailAsync("Contact info has been sent from: " +
+                                             Request.GetUri() + " by: " + contact.Name);
             try
             {
                 //send id... change type to int so it defaults to 0 and call toString();
