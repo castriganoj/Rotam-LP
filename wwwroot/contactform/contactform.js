@@ -1,6 +1,5 @@
 $(function () {
 
-
     var Data = {
         contact: {
             name: "",
@@ -160,6 +159,8 @@ $(function () {
 
     var InquiryView = {
 
+        viewDimmed: false,
+
         init: function () {
             this.inquiryForm = $('form.inquiry');
             this.inquiryFormName = $('form.inquiry #name');
@@ -167,10 +168,12 @@ $(function () {
             this.inquiryFormMessage = $('form.inquiry #message');
             this.successMessage = $('#contact .alert.alert-success');
             this.failMessage = $('#contact .alert.alert-warning')
+            this.inquiryFormModal = $('form.inquiry .ajaxModal');
 
             this.inquiryForm.submit(function(e) {
                 e.preventDefault();
 
+                InquiryView.toggleDim();
                 var inquiry = Controller.getInquiry();
 
                 inquiry.contact.name = InquiryView.inquiryFormName.val();
@@ -192,12 +195,24 @@ $(function () {
         },
 
         renderSuccessMessage: function() {
-
+            this.toggleDim();
             this.successMessage.show();
         },
 
-        renderFailMessage: function() {
+        renderFailMessage: function () {
+            this.toggleDim()
             this.failMessage.show();
+        },
+
+        toggleDim: function() {
+            if (InquiryView.viewDimmed == false) {
+                InquiryView.inquiryFormModal.show();
+                InquiryView.viewDimmed = true;
+
+            } else {
+                InquiryView.inquiryFormModal.hide();
+                InquiryView.viewDimmed = false;
+            }
         }
     };
 

@@ -119,6 +119,16 @@ h1, h2, h3, h4, h5, h6 {
   transition: all 0.5s;
 }
 
+.ajaxModal {
+    display: none;
+    position: absolute;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: rgba( 255, 255, 255, .8 ) url('../img/ajax-loader.gif') 50% 50% no-repeat;
+}
 /*--------------------------------------------------------------
 # Intro Section
 --------------------------------------------------------------*/
