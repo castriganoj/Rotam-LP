@@ -64,6 +64,7 @@ $(function () {
         init: function () {
             ContactView.init();
             InquiryView.init();
+            DimmerView.init();
 
             Data.activeContact = Data.contact;
             Data.activeInquiry = Data.inquiry;
@@ -81,7 +82,7 @@ $(function () {
         },
 
         saveContact: function (contact) {
-            
+
             Data.saveContact(contact)
                 .then(function (contactSaved) {
                     if (contactSaved === true) {
@@ -112,7 +113,11 @@ $(function () {
     };
 
     var ContactView = {
+
+        viewDimmed: false,
+
         init: function () {
+            this.section = $('#call-to-action');
             this.contactForm = $('form.contactInfo');
             this.contactFormName = $('form.contactInfo #Name');
             this.contactFormEmail = $('form.contactInfo #Email');
@@ -128,6 +133,8 @@ $(function () {
                 contact.name = ContactView.contactFormName.val();
                 contact.email = ContactView.contactFormEmail.val();
 
+                DimmerView.toggleDim(ContactView);
+
                 Controller.saveContact(contact);
 
             });
@@ -139,11 +146,13 @@ $(function () {
 
         renderSuccessMessage: function () {
             this.successMessage.show();
+            DimmerView.toggleDim(this);
 
         },
 
         renderFailMessage: function () {
             this.failMessage.show();
+            DimmerView.toggleDim(this);
 
         },
 
@@ -162,23 +171,24 @@ $(function () {
         viewDimmed: false,
 
         init: function () {
+            this.section=$('#contact');
             this.inquiryForm = $('form.inquiry');
             this.inquiryFormName = $('form.inquiry #name');
             this.inquiryFormEmail = $('form.inquiry #email');
             this.inquiryFormMessage = $('form.inquiry #message');
             this.successMessage = $('#contact .alert.alert-success');
             this.failMessage = $('#contact .alert.alert-warning')
-            this.inquiryFormModal = $('form.inquiry .ajaxModal');
 
-            this.inquiryForm.submit(function(e) {
+            this.inquiryForm.submit(function (e) {
                 e.preventDefault();
 
-                InquiryView.toggleDim();
                 var inquiry = Controller.getInquiry();
 
                 inquiry.contact.name = InquiryView.inquiryFormName.val();
                 inquiry.contact.email = InquiryView.inquiryFormEmail.val();
                 inquiry.message = InquiryView.inquiryFormMessage.val();
+
+                DimmerView.toggleDim(InquiryView);
 
                 Controller.saveInquiry(inquiry);
             });
@@ -190,31 +200,39 @@ $(function () {
         render: function () {
             this.successMessage.hide();
             this.failMessage.hide();
-
-
         },
 
-        renderSuccessMessage: function() {
-            this.toggleDim();
+        renderSuccessMessage: function () {
+            DimmerView.toggleDim(this);
             this.successMessage.show();
         },
 
         renderFailMessage: function () {
-            this.toggleDim()
+            DimmerView.toggleDim(this);
             this.failMessage.show();
-        },
-
-        toggleDim: function() {
-            if (InquiryView.viewDimmed == false) {
-                InquiryView.inquiryFormModal.show();
-                InquiryView.viewDimmed = true;
-
-            } else {
-                InquiryView.inquiryFormModal.hide();
-                InquiryView.viewDimmed = false;
-            }
         }
     };
+
+    var DimmerView = {
+        
+        init: function () {
+            this.waitingModal = $('#loadingModal');
+        },
+
+        
+        toggleDim: function (view) {
+            if (view.viewDimmed == false) {
+                view.section.prepend(DimmerView.waitingModal);
+                DimmerView.waitingModal.show();
+                view.viewDimmed = true;
+
+            } else {
+                DimmerView.waitingModal.hide();
+                view.viewDimmed = false;
+            }
+        }
+
+    }
 
 
     Controller.init();

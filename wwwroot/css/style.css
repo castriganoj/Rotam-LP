@@ -761,7 +761,7 @@ body.mobile-nav-active #mobile-nav-toggle {
   overflow: hidden;
   background: linear-gradient(rgba(29, 200, 205, 0.9), rgba(29, 205, 89, 0.85)), url("../img/BikeShop_2-01.jpg") fixed center center;
   background-size: cover;
-  padding: 80px 0;
+  position: relative;
 }
 
 #call-to-action .cta-title {
@@ -1130,6 +1130,7 @@ body.mobile-nav-active #mobile-nav-toggle {
   box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.1);
   padding: 60px 0;
   overflow: hidden;
+  position:relative;
 }
 
 #contact .contact-about h3 {
