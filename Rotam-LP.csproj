@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <TypeScriptToolsVersion>2.8</TypeScriptToolsVersion>
+    <ApplicationInsightsResourceId>/subscriptions/13b5f970-2bf9-4aca-bf0c-6e3d1ec59b0e/resourcegroups/Test_Website_Group/providers/microsoft.insights/components/Rotam-LP</ApplicationInsightsResourceId>
+    <ApplicationInsightsAnnotationResourceId>/subscriptions/13b5f970-2bf9-4aca-bf0c-6e3d1ec59b0e/resourcegroups/Test_Website_Group/providers/microsoft.insights/components/Rotam-LP</ApplicationInsightsAnnotationResourceId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -10,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.8" />
     <PackageReference Include="Microsoft.Azure.DocumentDB.Core" Version="2.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.3" />
@@ -23,6 +26,10 @@
 
   <ItemGroup>
     <None Include="app.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services" />
   </ItemGroup>
 
 </Project>
