@@ -1,8 +1,10 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,14 +24,16 @@ namespace Rotam_LP.Controllers
         private const string EndpointUri = "https://jc-personal2.documents.azure.com:443/";
         private const string PrimaryKey = "goXAev7OU8TUiTbRAVZxgfFubr3UVRStxP2v17UsvG82ZIpBvpI9R5UBR6D76vbGkIMFtRetPnxGgpNwUt47UA==";
         private DocumentClient documentClient;
+        private TelemetryClient Telemetry;
 
-        public HomeController()
+        public HomeController(TelemetryClient telemetry)
         {
             documentClient = GetDocumentDb();
-            
+
             //ToDo: move to one time execution and startup
-            documentClient.CreateDatabaseIfNotExistsAsync(new Database() {Id = "RotamLandingPage"});
+            documentClient.CreateDatabaseIfNotExistsAsync(new Database() { Id = "RotamLandingPage" });
             documentClient.CreateDocumentCollectionIfNotExistsAsync(UriFactory.CreateDatabaseUri("RotamLandingPage"), new DocumentCollection { Id = "ContactInfo" });
+            this.Telemetry = telemetry;
 
         }
 
@@ -49,11 +53,11 @@ namespace Rotam_LP.Controllers
 
                 return Ok(contact);
             }
-            catch(Exception e )
+            catch (Exception e)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-           
+
         }
 
         [HttpPost]
@@ -75,7 +79,20 @@ namespace Rotam_LP.Controllers
 
         }
 
-       
+        [HttpPost]
+        public IActionResult SendInsightsEvent([FromBody] string insightsEvent)
+        {
+
+            if (ValidPageView(insightsEvent))
+            {
+                Telemetry.TrackPageView(insightsEvent);
+                return StatusCode(StatusCodes.Status201Created);
+            }
+
+            return BadRequest("Invalid Page View Type");
+
+        }
+
 
         public IActionResult Error()
         {
@@ -84,7 +101,7 @@ namespace Rotam_LP.Controllers
 
         private DocumentClient GetDocumentDb()
         {
-           return new DocumentClient(new Uri(EndpointUri), PrimaryKey);
+            return new DocumentClient(new Uri(EndpointUri), PrimaryKey);
         }
 
         private async Task CreateContactDocumentIfNotExists(string databaseName, string collectionName, Contact contact)
@@ -169,7 +186,14 @@ namespace Rotam_LP.Controllers
             var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
             await client.SendEmailAsync(msg);
         }
+
+        private bool ValidPageView(string insightsEvent)
+        {
+            return Enum.GetNames(typeof(PageViewType)).Contains(insightsEvent);
+        }
     }
+
+    
 
 
 
@@ -177,7 +201,7 @@ namespace Rotam_LP.Controllers
     public class Contact
     {
         [JsonProperty(PropertyName = "id")]
-        public string Id{ get; set; }
+        public string Id { get; set; }
 
         [Required]
         public string Name { get; set; }
@@ -207,4 +231,17 @@ namespace Rotam_LP.Controllers
         public string message { get; set; }
 
     }
+
+    public enum PageViewType
+    {
+
+        Intro,
+        Benefits,
+        Features,
+        SignUp,
+        Progress,
+        MoreFeatures,
+        Contact
+    }
+
 }
