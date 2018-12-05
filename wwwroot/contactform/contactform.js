@@ -27,7 +27,8 @@ $(function() {
         activeInquiry: null,
 
         saveContact: function(contact) {
-
+            
+            gtag('event', 'SignUp');
             return new Promise(function(resolve, reject) {
                 $.ajax({
                     type: "POST",
@@ -48,6 +49,7 @@ $(function() {
 
         saveInquiry: function(inquiry) {
 
+            gtag('event', 'SendInquiry');
             return new Promise(function(resolve, reject) {
                 $.ajax({
                     type: "POST",
