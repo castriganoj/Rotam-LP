@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
@@ -80,12 +82,12 @@ namespace Rotam_LP.Controllers
         }
 
         [HttpPost]
-        public IActionResult SendInsightsEvent([FromBody] string insightsEvent)
+        public IActionResult SendInsightsEvent([FromBody] InsightsEvent insightsEvent)
         {
 
-            if (ValidPageView(insightsEvent))
+            if (ValidPageView(insightsEvent.pageName))
             {
-                Telemetry.TrackPageView(insightsEvent);
+                Telemetry.TrackPageView(insightsEvent.pageName);
                 return StatusCode(StatusCodes.Status201Created);
             }
 
@@ -232,16 +234,22 @@ namespace Rotam_LP.Controllers
 
     }
 
+    public class InsightsEvent
+    {
+        public string pageName { get; set; }
+        public IDictionary<string,string> HtmlElement { get; set; }
+    }
+
     public enum PageViewType
     {
 
-        Intro,
-        Benefits,
-        Features,
-        SignUp,
-        Progress,
-        MoreFeatures,
-        Contact
+        intro,
+        benefits,
+        features,
+        signUp,
+        progress,
+        moreFeatures,
+        contact
     }
 
 }
