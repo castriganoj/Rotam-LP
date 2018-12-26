@@ -15,6 +15,7 @@ using Microsoft.Azure.Documents.Client;
 using Microsoft.IdentityModel.Protocols;
 using Newtonsoft.Json;
 using Rotam_LP.Models;
+using RotamLP;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 
@@ -27,6 +28,7 @@ namespace Rotam_LP.Controllers
         private const string PrimaryKey = "goXAev7OU8TUiTbRAVZxgfFubr3UVRStxP2v17UsvG82ZIpBvpI9R5UBR6D76vbGkIMFtRetPnxGgpNwUt47UA==";
         private DocumentClient documentClient;
         private TelemetryClient Telemetry;
+        private IEmail EmailService; 
 
         public HomeController(TelemetryClient telemetry)
         {
@@ -37,6 +39,8 @@ namespace Rotam_LP.Controllers
             documentClient.CreateDocumentCollectionIfNotExistsAsync(UriFactory.CreateDatabaseUri("RotamLandingPage"), new DocumentCollection { Id = "ContactInfo" });
             this.Telemetry = telemetry;
 
+            this.EmailService = new EmailService();
+       
         }
 
         public IActionResult Index()
@@ -51,12 +55,15 @@ namespace Rotam_LP.Controllers
             {
                 await CreateContactDocumentIfNotExists("RotamLandingPage", "ContactInfo", contact);
 
-                await SendConfirmationEmailAsync(contact, "Thank you for singing up for Rotam!");
+                var messageType = "onBoarding";
+
+                await SendConfirmationEmailAsync(contact, messageType);
 
                 return Ok(contact);
             }
             catch (Exception e)
             {
+                Debug.WriteLine(e);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
@@ -76,6 +83,7 @@ namespace Rotam_LP.Controllers
             }
             catch (Exception e)
             {
+                Debug.WriteLine(e);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
@@ -159,19 +167,10 @@ namespace Rotam_LP.Controllers
 
         private async Task SendConfirmationEmailAsync(Contact contact, string message)
         {
-            var mailKey = System.Configuration.ConfigurationManager.AppSettings["emailKey"];
-            var fromEmail = System.Configuration.ConfigurationManager.AppSettings["fromEmailAddress"];
-            var fromEmailName = System.Configuration.ConfigurationManager.AppSettings["fromEmailName"];
 
-            var client = new SendGridClient(mailKey);
-            var from = new EmailAddress(fromEmail, fromEmailName);
-            var subject = "Message from Rotam";
-            var to = new EmailAddress(contact.Email, contact.Name);
-            var plainTextContent = message;
-            var htmlContent = message;
-            var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
-            await client.SendEmailAsync(msg);
+            await this.EmailService.SendEmail(contact, message);
         }
+
 
         private async Task SendNotificationEmailAsync(string message)
         {
@@ -196,10 +195,6 @@ namespace Rotam_LP.Controllers
     }
 
     
-
-
-
-
     public class Contact
     {
         [JsonProperty(PropertyName = "id")]
@@ -251,5 +246,7 @@ namespace Rotam_LP.Controllers
         moreFeatures,
         contact
     }
+
+    
 
 }
