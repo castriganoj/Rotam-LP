@@ -59,7 +59,7 @@ namespace RotamLP
               .UseMemoryCachingProvider()
               .Build();
 
-            var template = File.ReadAllText(templateFolderPath + @"\Onboarding.cshtml");
+            var template = File.ReadAllText(templateFolderPath + @"/Onboarding.cshtml");
 
             string result = await engine.CompileRenderAsync("templatekey", template, emailModel);
 
