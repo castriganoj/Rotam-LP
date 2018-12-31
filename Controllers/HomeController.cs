@@ -8,6 +8,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Documents;
@@ -28,9 +29,10 @@ namespace Rotam_LP.Controllers
         private const string PrimaryKey = "goXAev7OU8TUiTbRAVZxgfFubr3UVRStxP2v17UsvG82ZIpBvpI9R5UBR6D76vbGkIMFtRetPnxGgpNwUt47UA==";
         private DocumentClient documentClient;
         private TelemetryClient Telemetry;
+        private IHostingEnvironment enviroment;
         private IEmail EmailService; 
 
-        public HomeController(TelemetryClient telemetry)
+        public HomeController(TelemetryClient telemetry, IHostingEnvironment env)
         {
             documentClient = GetDocumentDb();
 
@@ -39,7 +41,7 @@ namespace Rotam_LP.Controllers
             documentClient.CreateDocumentCollectionIfNotExistsAsync(UriFactory.CreateDatabaseUri("RotamLandingPage"), new DocumentCollection { Id = "ContactInfo" });
             this.Telemetry = telemetry;
 
-            this.EmailService = new EmailService();
+            this.EmailService = new EmailService(env.WebRootPath);
        
         }
 

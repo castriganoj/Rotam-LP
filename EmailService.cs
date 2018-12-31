@@ -16,12 +16,14 @@ namespace RotamLP
         private string MailKey;
         private string FromEmail;
         private string FromEmailName;
+        private string WebRootPath;
 
-        public EmailService()
+        public EmailService(string webRootPath)
         {
             this.MailKey = System.Configuration.ConfigurationManager.AppSettings["emailKey"];
             this.FromEmail = System.Configuration.ConfigurationManager.AppSettings["fromEmailAddress"];
             this.FromEmailName = System.Configuration.ConfigurationManager.AppSettings["fromEmailName"];
+            this.WebRootPath = webRootPath;
         }
 
         public async Task<Response> SendEmail(Contact contact, string messageType)
@@ -56,7 +58,7 @@ namespace RotamLP
                         .UseMemoryCachingProvider()
                         .Build();
 
-            var templateFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "EmailTemplates");
+            var templateFolderPath = Path.Combine(WebRootPath, "EmailTemplates");
 
             var template = File.ReadAllText(templateFolderPath + @"/Onboarding.cshtml");
 
