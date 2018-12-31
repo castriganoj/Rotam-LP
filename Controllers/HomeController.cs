@@ -63,7 +63,7 @@ namespace Rotam_LP.Controllers
             }
             catch (Exception e)
             {
-                Debug.WriteLine(e);
+                Telemetry.TrackException(e);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
@@ -81,9 +81,9 @@ namespace Rotam_LP.Controllers
 
                 return Ok(inquiry);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Debug.WriteLine(e);
+                Telemetry.TrackException(ex);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
@@ -117,8 +117,8 @@ namespace Rotam_LP.Controllers
         private async Task CreateContactDocumentIfNotExists(string databaseName, string collectionName, Contact contact)
         {
 
-            await SendNotificationEmailAsync("Contact info has been sent from: " +
-                                             Request.GetUri() + " by: " + contact.Name);
+            // await SendNotificationEmailAsync("Contact info has been sent from: " +
+            //                                  Request.GetUri() + " by: " + contact.Name);
             try
             {
                 //send id... change type to int so it defaults to 0 and call toString();
