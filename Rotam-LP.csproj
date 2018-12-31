@@ -27,11 +27,16 @@
 
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="EmailTemplates\Onboarding.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
     <WCFMetadata Include="Connected Services" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="EmailTemplates\Onboarding.cshtml">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
