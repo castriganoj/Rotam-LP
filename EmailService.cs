@@ -52,12 +52,11 @@ namespace RotamLP
         private async Task<string> GetHtmlContent(Contact contact, EmailModel emailModel)
         {
            
+            var engine = new RazorLightEngineBuilder()
+                        .UseMemoryCachingProvider()
+                        .Build();
 
             var templateFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "EmailTemplates");
-
-            var engine = new RazorLightEngineBuilder()
-              .UseMemoryCachingProvider()
-              .Build();
 
             var template = File.ReadAllText(templateFolderPath + @"/Onboarding.cshtml");
 
