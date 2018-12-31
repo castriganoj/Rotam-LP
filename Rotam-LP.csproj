@@ -21,6 +21,7 @@
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
   </ItemGroup>
 
+
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.4" />
   </ItemGroup>
@@ -33,8 +34,8 @@
     <WCFMetadata Include="Connected Services" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="EmailTemplates\Onboarding.cshtml" CopyToOutputDirectory="Always" />
+ <ItemGroup>
+    <EmbeddedResource Include="EmailTemplates\Onboarding.cshtml" />
   </ItemGroup>
 
 </Project>
