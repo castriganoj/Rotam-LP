@@ -73,19 +73,19 @@ namespace Rotam_LP.Controllers
         public async Task<IActionResult> SubmitInquiry([FromBody] Inquiry inquiry)
         {
             var confirmationMessage = "Thank you for your inquiry";
-            // try
-            // {
+            try
+            {
                 await CreateInquiryDocumentIfNotExists("RotamLandingPage", "ContactInfo", inquiry);
 
                 await SendConfirmationEmailAsync(inquiry.contact, confirmationMessage);
 
                 return Ok(inquiry);
-            // }
-            // catch (Exception e)
-            // {
-            //     Debug.WriteLine(e);
-            //     return StatusCode(StatusCodes.Status500InternalServerError);
-            // }
+            }
+            catch (Exception ex)
+            {
+                Telemetry.TrackException(ex);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
 
         }
 
