@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="EmailTemplates\Onboarding.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
