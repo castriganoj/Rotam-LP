@@ -34,9 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="EmailTemplates\Onboarding.cshtml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <None Include="EmailTemplates\Onboarding.cshtml" CopyToOutputDirectory="Always" />
   </ItemGroup>
 
 </Project>
