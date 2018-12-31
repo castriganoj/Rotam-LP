@@ -34,8 +34,4 @@
     <WCFMetadata Include="Connected Services" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="EmailTemplates\Onboarding.cshtml" CopyToOutputDirectory="Always" />
-  </ItemGroup>
-
 </Project>
