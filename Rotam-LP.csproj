@@ -34,15 +34,8 @@
     <WCFMetadata Include="Connected Services" />
   </ItemGroup>
 
-<<<<<<< HEAD
  <ItemGroup>
     <EmbeddedResource Include="EmailTemplates\Onboarding.cshtml" />
-=======
-  <ItemGroup>
-    <Content Update="EmailTemplates\Onboarding.cshtml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
->>>>>>> 58fc8c480c0ea521a52484d9e5685d2353a36aa4
   </ItemGroup>
 
 </Project>
