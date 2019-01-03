@@ -17,6 +17,7 @@ namespace RotamLP
         private string FromEmail;
         private string FromEmailName;
         private string WebRootPath;
+        private RazorLightEngine RazorEngine;
 
         public EmailService(string webRootPath)
         {
@@ -24,12 +25,13 @@ namespace RotamLP
             this.FromEmail = System.Configuration.ConfigurationManager.AppSettings["fromEmailAddress"];
             this.FromEmailName = System.Configuration.ConfigurationManager.AppSettings["fromEmailName"];
             this.WebRootPath = webRootPath;
+            this.RazorEngine = RazorEngineSingleton.GetRazorEngine();
         }
 
         public async Task<Response> SendEmail(Contact contact, string messageType)
         {
 
-             var model = new EmailModel()
+            var model = new EmailModel()
             {
                 Subject = "Thank you for signing up for Rotam",
                 ToName = contact.Name,
@@ -53,22 +55,22 @@ namespace RotamLP
 
         private async Task<string> GetHtmlContent(Contact contact, EmailModel emailModel)
         {
-           
-            var engine = new RazorLightEngineBuilder()
-                        .UseMemoryCachingProvider()
-                        .Build();
 
-            var templateFolderPath = Path.Combine(WebRootPath, "EmailTemplates");
+            var result = "";
+            var cacheResult = RazorEngine.TemplateCache.RetrieveTemplate("templatekey");
+            if (cacheResult.Success)
+            {
+                 result = await RazorEngine.RenderTemplateAsync(cacheResult.Template.TemplatePageFactory(), emailModel);
+            }
+            else
+            {
+                var templateFolderPath = Path.Combine(WebRootPath, "EmailTemplates");
 
-            var template = File.ReadAllText(templateFolderPath + @"/Onboarding.cshtml");
+                var template = File.ReadAllText(templateFolderPath + @"/Onboarding.cshtml");
 
-            string result = await engine.CompileRenderAsync("templatekey", template, emailModel);
+                result = await RazorEngine.CompileRenderAsync("templatekey", template, emailModel);
 
-            //            var cacheResult = engine.TemplateCache.RetrieveTemplate("templateKey");
-            //if(cacheResult.Success)
-            //{
-            //    string result = await engine.RenderTemplateAsync(cacheResult.Template.TemplatePageFactory(), model);
-            //}
+            }
 
             return result;
 
@@ -123,4 +125,17 @@ namespace RotamLP
         public string Footer { get; set; }
     }
 
+    public class RazorEngineSingleton
+    {
+        private RazorEngineSingleton()
+        {
+        }
+
+        private static readonly RazorLightEngine Engine = new RazorLightEngineBuilder().UseMemoryCachingProvider().Build();
+
+        public static RazorLightEngine GetRazorEngine()
+        {
+            return Engine;
+        }
+    }
 }
