@@ -171,6 +171,7 @@ $(function() {
             this.contactFormName = $('form.contactInfo #Name');
             this.contactFormEmail = $('form.contactInfo #Email');
             this.contactFormConfirmEmail = $('form.contactInfo #confirm-email');
+
             this.successMessage = $('#call-to-action .alert.alert-success');
             this.failMessage = $('#call-to-action .alert.alert-warning')
 
@@ -203,6 +204,7 @@ $(function() {
                     this.contactForm[0].reset();
                 }
 
+
                 DimmerView.toggleDim(ContactView);
 
                 Controller.saveContact(contact);
@@ -213,8 +215,6 @@ $(function() {
             this.failMessage.hide();
 
         },
-
-        
 
         renderSuccessMessage: function() {
             this.successMessage.show();
@@ -236,7 +236,6 @@ $(function() {
 
 
         }
-
 
     };
 
@@ -330,7 +329,7 @@ $(function() {
             ];
             wayPoints = [];
 
-            Event.pages.forEach( page => {
+            Event.pages.forEach( function(page) {
                let pageViewEvent =    new Data.pageViewEvent();
                 pageViewEvent.pageName = page.id
                 pageViewEvent.element = page            
