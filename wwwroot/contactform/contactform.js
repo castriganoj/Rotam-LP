@@ -170,6 +170,7 @@ $(function() {
             this.contactForm = $('form.contactInfo');
             this.contactFormName = $('form.contactInfo #Name');
             this.contactFormEmail = $('form.contactInfo #Email');
+            this.contactFormConfirmEmail = $('form.contactinfo #confirm-email');
             this.successMessage = $('#call-to-action .alert.alert-success');
             this.failMessage = $('#call-to-action .alert.alert-warning')
 
@@ -181,6 +182,13 @@ $(function() {
 
                 contact.name = ContactView.contactFormName.val();
                 contact.email = ContactView.contactFormEmail.val();
+                let confirmEmail = ContactView.contactForm.val();
+
+                if(ContactView.confirmEmail(contact.email, confirmEmail) !== true)
+                {
+                    throw 'bad email';
+                }
+                
 
                 DimmerView.toggleDim(ContactView);
 
@@ -191,6 +199,14 @@ $(function() {
             this.successMessage.hide();
             this.failMessage.hide();
 
+        },
+
+        confirmEmail: function(email, confirmEmail) {
+          if(email !== confirmEmail)
+          {
+              return false;
+          } 
+          return true;
         },
 
         renderSuccessMessage: function() {
@@ -213,7 +229,6 @@ $(function() {
 
 
         }
-
 
     };
 
@@ -307,7 +322,7 @@ $(function() {
             ];
             wayPoints = [];
 
-            Event.pages.forEach( page => {
+            Event.pages.forEach( function(page) {
                let pageViewEvent =    new Data.pageViewEvent();
                 pageViewEvent.pageName = page.id
                 pageViewEvent.element = page            
