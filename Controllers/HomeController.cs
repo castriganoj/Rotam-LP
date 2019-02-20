@@ -105,6 +105,13 @@ namespace Rotam_LP.Controllers
 
         }
 
+        public async Task<IActionResult> Unsubscribe(string userId)
+        {
+            await UpdateDocument("RotamLandingPage", "ContactInfo", userId);
+
+            return View("unsubscribe");
+        }
+
 
         public IActionResult Error()
         {
@@ -116,6 +123,18 @@ namespace Rotam_LP.Controllers
             return new DocumentClient(new Uri(EndpointUri), PrimaryKey);
         }
 
+        private async Task UpdateDocument(string database, string collectionName, string Id)
+        {
+             var documentResponse =  await this.documentClient.
+                    ReadDocumentAsync<Contact>(UriFactory.CreateDocumentUri(database, collectionName, Id));
+             
+             documentResponse.Document.Subscribed = false;
+
+             await this.documentClient.
+             ReplaceDocumentAsync(UriFactory.
+             CreateDocumentUri(database, collectionName, documentResponse.Document.Id), documentResponse.Document);
+            
+        }
         private async Task CreateContactDocumentIfNotExists(string databaseName, string collectionName, Contact contact)
         {
 
@@ -124,7 +143,8 @@ namespace Rotam_LP.Controllers
             try
             {
                 //send id... change type to int so it defaults to 0 and call toString();
-                await this.documentClient.ReadDocumentAsync(UriFactory.CreateDocumentUri(databaseName, collectionName, "0"));
+                await this.documentClient.
+                ReadDocumentAsync(UriFactory.CreateDocumentUri(databaseName, collectionName, "0"));
                 Debug.WriteLine("Contact exists {0}", contact.Name);
             }
             catch (DocumentClientException de)
@@ -213,10 +233,13 @@ namespace Rotam_LP.Controllers
 
         public Guid verifyToken { get; set; }
 
+        public bool Subscribed { get; set; }
+
 
         public Contact()
         {
             verifyToken = Guid.NewGuid();
+            Subscribed = true;
         }
     }
 
