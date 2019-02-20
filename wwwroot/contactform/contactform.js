@@ -170,10 +170,22 @@ $(function() {
             this.contactForm = $('form.contactInfo');
             this.contactFormName = $('form.contactInfo #Name');
             this.contactFormEmail = $('form.contactInfo #Email');
+            this.contactFormConfirmEmail = $('form.contactInfo #confirm-email');
             this.successMessage = $('#call-to-action .alert.alert-success');
             this.failMessage = $('#call-to-action .alert.alert-warning')
 
-
+            this.contactFormConfirmEmail.on('input', function() {
+                let confirmEmailElem = ContactView.contactFormConfirmEmail.get(0)
+                if(ContactView.contactFormEmail.val() !== ContactView.contactFormConfirmEmail.val())
+                {
+                    confirmEmailElem.setCustomValidity('Emails do not match');
+                }
+                else
+                {
+                    confirmEmailElem.setCustomValidity('');
+                }
+            });
+            
             this.contactForm.submit(function(e) {
                 e.preventDefault();
 
@@ -181,17 +193,28 @@ $(function() {
 
                 contact.name = ContactView.contactFormName.val();
                 contact.email = ContactView.contactFormEmail.val();
+                contact.confirmEmail = ContactView.contactFormConfirmEmail.val();
+
+                if(contact.email !== contact.confirmEmail)
+                {
+                    ContactView.contactFormConfirmEmail.get(0)
+                    .setCustomValidity("Passwords Don't Match");
+                    throw 'emails do not match';
+                    this.contactForm[0].reset();
+                }
 
                 DimmerView.toggleDim(ContactView);
 
                 Controller.saveContact(contact);
-
+                this.contactForm[0].reset()
             });
 
             this.successMessage.hide();
             this.failMessage.hide();
 
         },
+
+        
 
         renderSuccessMessage: function() {
             this.successMessage.show();
