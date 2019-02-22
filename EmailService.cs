@@ -92,7 +92,7 @@ namespace RotamLP
         private string GetLineThree()
         {
             return
-            @"We do our best to create an app to help grow your bike shop and we rely on your feedback to make it great! Please send any feedback you have to jim @rotam.bike.
+            @"We do our best to create an app to help grow your bike shop and we rely on your feedback to make it great! Please send any feedback you have to jim@rotam.bike.
                     As the application is developed we will send out periodic notifications of the progress so you can view and try out the updates first hand. 
                     ";
         }
@@ -100,8 +100,7 @@ namespace RotamLP
         private string GetFooter()
         {
             return
-            @"P.S.I know you are super busy so I wanted to make sure you know that I do my best to make sure every email sent is valuable to you. If you ever want to unsubscribe just use the link in the bottom of this email.";
-
+            @"";
         }
 
     }
