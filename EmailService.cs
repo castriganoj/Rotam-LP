@@ -86,7 +86,7 @@ namespace RotamLP
         private string GetLineTwo()
         {
             return
-            @" Once the first prototype is complete you will receive an email with a link to test it out. Look for the email 3 to 6 weeks from now.";
+            @" Once the first prototype is complete you will receive an email with a link to test it out. Look out for the email in the coming months.";
         }
 
         private string GetLineThree()
